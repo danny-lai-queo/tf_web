@@ -3,7 +3,7 @@ This is a flask application to receive a image file, process using deep learning
 
 To run this application.
 
-* Requires python 3.7
+* Requires python 3.10
 ```
 pip install -r requirements.txt
 python main.py
