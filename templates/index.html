@@ -6,15 +6,60 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Flowers AI</title>
 </head>
+<style>
+* {
+  padding: 0;
+  margin: 0;
+}
+
+video {
+  max-width: 100vw;
+}
+
+button {
+  width: 60px;
+  margin-right: 20px;
+}
+</style>
 <body>
     <h1>Flower Images Classification Application</h1>
     <h6><a href="/about">About</a></h6>
     <br>
-    <form action="/process" method="post" enctype="multipart/form-data">
+    <form id="img_form" action="/process" method="post" enctype="multipart/form-data">
         Select image to upload:<br>
         <input type="file" name="fileToUpload" id="fileToUpload"><br>
         <input type="submit" value="Upload Image" name="submit"><br>
     </form>
     
+    <div>
+        <video id="video" controls autoplay playsInline></video>
+        <div>
+          <button id="btn-front">Front Camera</button>
+          <button id="btn-back">Back Camera</button>
+        </div>
+        <div>
+          <button id="btn-take-photo">Take photo</button>
+        </div>
+    </div>
+
+    <!-- <form id="camera_form" action="/process" method="post" enctype="multipart/form-data">
+        <input type="file" accept="image/*" capture="environment"><br>
+        <input type="sumbit" value="Upload Image" name="submit"><br>
+    </form> -->
+
+    <!-- <br><br> -->
+
+    <!-- <div class="camera">
+        <video id="video1">Video stream not available.</video>
+        <button id="startbutton">Take photo</button>
+    </div> -->
+      
+    <canvas id="canvas"> </canvas>
+    <div class="output">
+      <img id="photo" alt="The screen capture will appear in this box." />
+    </div>
+
+    
 </body>
+<script src="{{url_for('static', filename='index.js')}}"></script>
 </html>
