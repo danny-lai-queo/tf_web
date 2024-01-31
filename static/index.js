@@ -228,6 +228,33 @@ function setup() {
     false,
   );
 
+  let fileElm = document.getElementById("fileToUpload");
+  console.log("fileElm");
+  console.log(fileElm);
+
+  fileElm.onchange = (evt) => {
+        console.log('onchange');
+        console.log(evt);
+        let files = evt.target.files;
+        // FileReader support
+        if (FileReader && files && files.length) {
+            var fr = new FileReader();
+            fr.onload = function () {
+                photoElm.src = fr.result;
+                photoElm.width = width;
+                // photoElm.height = height;
+                console.log(`photoElm done.. width=${width}`);
+            }
+            fr.readAsDataURL(files[0]);
+        }
+        else {
+            // fallback -- perhaps submit the input to an iframe and temporarily store
+            // them on the server until the user's session ends.
+            console.log("error: failed to load files : not supported");
+        }
+    };
+
+
   clearPhoto();
 
 
