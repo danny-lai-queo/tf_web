@@ -150,7 +150,8 @@ function setup() {
   let streaming = false;
 
   const videoElm = document.querySelector('#video');
-  const canvasElm = document.querySelector("#canvas");
+  //const canvasElm = document.querySelector("#canvas");
+  let canvasElm = null;
   const photoElm = document.getElementById("photo");
 
   const btnFront = document.querySelector('#btn-front');
@@ -202,8 +203,8 @@ function setup() {
 
         videoElm.setAttribute("width", width);
         videoElm.setAttribute("height", height);
-        canvasElm.setAttribute("width", width);
-        canvasElm.setAttribute("height", height);
+        // canvasElm.setAttribute("width", width);
+        // canvasElm.setAttribute("height", height);
         streaming = true;
       }
     },
@@ -231,9 +232,13 @@ function setup() {
 
 
   function clearPhoto() {
+    let canvasElm = document.createElement("canvas");
+    canvasElm.setAttribute("id", "canvas");
+    canvasElm.setAttribute("width", width);
+    canvasElm.setAttribute("height", height);
     const context = canvasElm.getContext("2d");
     context.fillStyle = "#AAA";
-    context.fillRect(0, 0, canvas.width, canvas.height);
+    context.fillRect(0, 0, canvasElm.width, canvasElm.height);
 
     const data = canvasElm.toDataURL("image/jpeg", 1);
     photoElm.setAttribute("src", data);
@@ -246,11 +251,15 @@ function setup() {
   // other changes before drawing it.
 
   function takePicture() {
+    let canvasElm = document.createElement("canvas");
+    canvasElm.setAttribute("id", "canvas");
+    canvasElm.setAttribute("width", width);
+    canvasElm.setAttribute("height", height);
     const context = canvasElm.getContext("2d");
     if (width && height) {
       console.log("takePicture");
-      canvas.width = width;
-      canvas.height = height;
+      canvasElm.width = width;
+      canvasElm.height = height;
       context.drawImage(videoElm, 0, 0, width, height);
 
       const data = canvasElm.toDataURL("image/jpg", 1);
