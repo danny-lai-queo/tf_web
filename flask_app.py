@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request
-# from keras.preprocessing.image import img_to_array
+#from keras.preprocessing.image import img_to_array
 from keras.utils import img_to_array
 from keras.models import load_model
 import cv2
@@ -32,6 +32,7 @@ def processImg(img_path):
     img_array = tf.expand_dims(img_array, 0) # Create a batch
 
     my_dir = os.path.dirname(__file__)
+    print(f"my_dir == {my_dir} >>>>>>>>>>>>>>>>>>>>>>>")
     m_name = os.path.join(my_dir, 'model.tflite')
     # TF_MODEL_FILE_PATH = 'model.tflite' # The default path to the saved TensorFlow Lite model
     TF_MODEL_FILE_PATH = m_name
@@ -53,7 +54,7 @@ def processImg(img_path):
 def processImg_old(IMG_PATH):
     # Read image
     model = load_model("flower.model")
-    
+
     # Preprocess image
     image = cv2.imread(IMG_PATH)
     image = cv2.resize(image, (199, 199))
@@ -107,7 +108,7 @@ def processRequest():
                     with open(new_filepath, "wb") as binary_file:
                         # Write bytes to file
                         binary_file.write(decodedBytes)
-                    
+
                     if imgType == 'png':
                         print("convert png to jpg")
                         im = Image.open(new_filepath)
@@ -125,14 +126,14 @@ def processRequest():
 
                     #return flower_name
                     return render_template("response.html", flower_name=flower_name, confidence_percent_str=confidence_percent_str, img_base64_str=imgBase64)
-            
+
             print("resopnse file error.")
-            return render_template("error.html", error_message="File Processing Error", details="")
+            return render_template("error.html", error_message="File Processing Error")
     except Exception as ex:
         print("ERROR: ", ex)
-        return render_template("error.html", error_message="Server Error", details="{ex}")
+        return render_template("error.html", error_message="Server Error")
 
-                
+
 
 
     return render_template("index.html")
@@ -157,5 +158,6 @@ def processRequest_old():
     return render_template("response.html", flower_name=flower_name, confidence_percent_str=confidence_percent_str, img_base64_str=encoded_string)
 
 
-if __name__ == "__main__":
-    app.run(debug=True)
+
+
+
