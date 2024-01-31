@@ -13,6 +13,10 @@ from datetime import datetime
 import base64
 import os
 
+from PIL import Image
+import re
+import base64
+
 #names = ["daisy", "dandelon", "roses", "sunflowers", "tulips"]
 class_names = ['daisy', 'dandelion', 'roses', 'sunflowers', 'tulips']
 
@@ -80,7 +84,57 @@ def postsPage():
 
 # Process images
 @app.route("/process", methods=["POST"])
-def processReq():
+def processRequest():
+    try:
+        data = request.form["img_content"]
+        # print("img_content")
+        # print(data[:50])
+        pattern = re.compile(r'^data:image/(?P<mime>[a-z]{3,4});base64,(?P<stuff>.+)')
+        matchObject = pattern.search(data)
+        if matchObject is not None:
+            dataDict = matchObject.groupdict()
+            if dataDict is not None and 'mime' in dataDict.keys() and 'stuff' in dataDict.keys():
+                imgType = dataDict['mime']
+                imgBase64 = dataDict['stuff']
+                if imgType in ['jpeg', 'png'] and imgBase64 is not None:
+                    imgBytes = imgBase64.encode("ascii")
+                    decodedBytes = base64.decodebytes(imgBytes)
+                    new_filepath = datetime.utcnow().strftime('%Y%m%d_%H%M%S_%f')
+                    #new_filepath = f"{new_filepath}.{imgType}"
+                    with open(new_filepath, "wb") as binary_file:
+                        # Write bytes to file
+                        binary_file.write(decodedBytes)
+                    
+                    if imgType == 'png':
+                        print("convert png to jpg")
+                        im = Image.open(new_filepath)
+                        rgb_im = im.convert('RGB')
+                        jpg_path = f"{new_filepath}.jpg"
+                        rgb_im.save(jpg_path, quality=100)
+                        os.remove(new_filepath)
+                        new_filepath = jpg_path
+
+                    flower_name, confidence_percent = processImg(new_filepath)
+                    confidence_percent_str = "{:.2f}".format(confidence_percent)
+                    os.remove(new_filepath)
+
+                    print("response normal...")
+
+                    #return flower_name
+                    return render_template("response.html", flower_name=flower_name, confidence_percent_str=confidence_percent_str, img_base64_str=imgBase64)
+            
+            print("resopnse file error.")
+            return render_template("error.html", error_message="File Processing Error")
+    except Exception as ex:
+        print("ERROR: ", ex)
+        return render_template("error.html", error_message="Server Error")
+
+                
+
+
+    return render_template("index.html")
+
+def processRequest_old():
     data = request.files["fileToUpload"]
     new_filepath = datetime.utcnow().strftime('%Y%m%d_%H%M%S_%f')
     # data.save("img.jpg")
